@@ -20,6 +20,7 @@ lerna-debug.log*
 
 # 上传的文件
 backend/uploads/
+backend/downloads/
 *.tmp
 
 # 编辑器

@@ -15,12 +15,17 @@
   --primary-color: #6366f1;
   --primary-hover: #4f46e5;
   --primary-light: #eef2ff;
+  --primary-dark: #4338ca;
 
   /* 辅助色彩 */
   --secondary-color: #8b5cf6;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --error-color: #ef4444;
+  --info-color: #3498db;
+  --info-dark: #2980b9;
+  --danger-color: #e74c3c;
+  --danger-dark: #c0392b;
 
   /* 中性色彩 */
   --bg-primary: #ffffff;
@@ -42,6 +47,9 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --border-radius-md: var(--radius-md);
+  --border-radius-lg: var(--radius-lg);
+  --border-radius-full: 9999px;
 
   /* 间距 */
   --spacing-xs: 0.5rem;
@@ -761,5 +769,548 @@ body {
 
   .strategy-buttons {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================
+   🚀 进度条样式（新增）
+   ========================================== */
+
+/* 进度条遮罩层 */
+.progress-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: background 0.3s ease;
+}
+
+/* 最小化状态：去掉遮罩，允许操作页面 */
+.progress-overlay.minimized {
+  background: transparent;
+  pointer-events: none;
+}
+
+/* 最小化时，只让小窗口可以点击 */
+.progress-overlay.minimized .progress-mini {
+  pointer-events: auto;
+}
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 进度条容器 */
+.progress-container {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-xl);
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 进度条头部 */
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--bg-tertiary);
+}
+
+.progress-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-cancel {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--error-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* 进度信息 */
+.progress-info {
+  margin-bottom: var(--spacing-lg);
+}
+
+.progress-message {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+}
+
+.progress-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.progress-current {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.progress-total {
+  font-weight: 500;
+}
+
+.progress-percent {
+  font-weight: 600;
+  color: var(--success-color);
+}
+
+/* 进度条 */
+.progress-bar-container {
+  margin-bottom: var(--spacing-xl);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 24px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: var(--radius-lg);
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 日志区域 */
+.progress-log {
+  margin-bottom: var(--spacing-xl);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+}
+
+.log-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.log-content {
+  max-height: 150px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.log-item {
+  padding: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+
+.log-info {
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+}
+
+.log-success {
+  color: var(--success-color);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.log-error {
+  color: var(--error-color);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* 流式结果展示 */
+.streaming-results {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+}
+
+.results-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.results-content {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.result-item {
+  padding: var(--spacing-md);
+  background: white;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.result-number {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.result-model {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+}
+
+.result-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.result-original,
+.result-rewritten {
+  padding: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.result-original strong,
+.result-rewritten strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.result-original p,
+.result-rewritten p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ==========================================
+   进度条响应式设计
+   ========================================== */
+
+@media (max-width: 640px) {
+  .progress-container {
+    width: 95%;
+    padding: var(--spacing-lg);
+  }
+
+  .progress-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .result-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-stats {
+    flex-wrap: wrap;
+  }
+}
+
+/* 成功提示动画 */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* 进度条成功状态 */
+.progress-message {
+  transition: all 0.3s ease;
+}
+
+.progress-message.success {
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+/* ==========================================
+   最小化窗口样式
+   ========================================== */
+
+.progress-mini {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 280px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  overflow: hidden;
+  animation: slideInRight 0.3s ease;
+}
+
+.mini-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+}
+
+.mini-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.btn-expand {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-expand:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.mini-progress {
+  padding: var(--spacing-md);
+}
+
+.mini-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.mini-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+  transition: width 0.3s ease;
+  border-radius: var(--border-radius-full);
+}
+
+.mini-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mini-current {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+/* 头部按钮组样式 */
+.header-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-minimize {
+  background: var(--info-color);
+  border: none;
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.btn-minimize:hover {
+  background: var(--info-dark);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.btn-cancel {
+  background: var(--danger-color);
+  border: none;
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.btn-cancel:hover {
+  background: var(--danger-dark);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+/* 键盘快捷键提示 */
+.keyboard-hint {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(155, 89, 182, 0.1));
+  border-left: 4px solid var(--primary-color);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-radius: var(--border-radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.keyboard-hint kbd {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 动画 */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .progress-mini {
+    width: calc(100% - 40px);
+    bottom: 10px;
+    right: 20px;
+    left: 20px;
   }
 }
