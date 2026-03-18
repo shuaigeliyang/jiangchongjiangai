@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎓 论文降重工具 - by 哈雷酱</title>
+  <link rel="stylesheet" href="src/styles/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <header class="header">
+      <h1 class="title">
+        <span class="icon">🎓</span>
+        论文降重工具
+        <span class="subtitle">by 哈雷酱 (￣▽￣)／</span>
+      </h1>
+      <p class="description">优雅高效的AI降重工具，帮助你轻松通过查重检测！</p>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+      <!-- 输入区域 -->
+      <section class="input-section">
+        <!-- 标签切换 -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="text">
+            <span class="icon">📝</span>
+            文本输入
+          </button>
+          <button class="tab-btn" data-tab="file">
+            <span class="icon">📄</span>
+            文件上传
+          </button>
+        </div>
+
+        <!-- 文本输入面板 -->
+        <div class="tab-content active" id="text-tab">
+          <textarea
+            id="input-text"
+            class="input-textarea"
+            placeholder="请输入需要降重的文本内容...
+
+💡 提示：
+- 支持最多 10000 字的文本
+- 建议分段处理长文本
+- 保留专业术语和人名地名
+
+哼，快把你的论文内容粘贴进来吧！(￣▽￣)／"
+          ></textarea>
+        </div>
+
+        <!-- 文件上传面板 -->
+        <div class="tab-content" id="file-tab">
+          <div class="upload-area" id="upload-area">
+            <div class="upload-icon">📁</div>
+            <p class="upload-text">点击或拖拽文件到此区域</p>
+            <p class="upload-hint">支持 .docx、.doc、.txt 格式，最大 10MB</p>
+            <input type="file" id="file-input" class="file-input" accept=".docx,.doc,.txt" hidden>
+            <button class="btn btn-secondary" id="select-file-btn">选择文件</button>
+          </div>
+          <div class="file-info" id="file-info" style="display: none;">
+            <div class="file-icon">📄</div>
+            <div class="file-details">
+              <p class="file-name" id="file-name"></p>
+              <p class="file-size" id="file-size"></p>
+            </div>
+            <button class="btn-remove" id="remove-file-btn">✕</button>
+          </div>
+        </div>
+
+        <!-- 选项设置 -->
+        <div class="options-panel">
+          <div class="option-group">
+            <label class="option-label">
+              <span class="icon">⚡</span>
+              降重强度
+            </label>
+            <div class="strategy-buttons">
+              <button class="strategy-btn" data-strategy="LIGHT">
+                <span class="strategy-name">轻度</span>
+                <span class="strategy-desc">同义词替换</span>
+              </button>
+              <button class="strategy-btn active" data-strategy="MEDIUM">
+                <span class="strategy-name">中度</span>
+                <span class="strategy-desc">句式重组</span>
+              </button>
+              <button class="strategy-btn" data-strategy="HEAVY">
+                <span class="strategy-name">重度</span>
+                <span class="strategy-desc">大幅改写</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label class="option-label">
+              <span class="icon">🤖</span>
+              AI模型
+            </label>
+            <select id="model-select" class="model-select">
+              <option value="zhipu">智谱AI GLM-4（推荐）</option>
+              <option value="deepseek">DeepSeek</option>
+              <option value="openai">OpenAI GPT-3.5</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="rewrite-btn">
+            <span class="icon">✨</span>
+            开始降重
+          </button>
+          <button class="btn btn-secondary" id="clear-btn">
+            <span class="icon">🗑️</span>
+            清空内容
+          </button>
+        </div>
+      </section>
+
+      <!-- 结果区域 -->
+      <section class="result-section" id="result-section" style="display: none;">
+        <div class="result-header">
+          <h2 class="result-title">
+            <span class="icon">✨</span>
+            降重结果
+          </h2>
+          <div class="result-actions">
+            <button class="btn-icon" id="copy-btn" title="复制结果">
+              <span class="icon">📋</span>
+            </button>
+            <button class="btn-icon" id="download-btn" title="下载文件">
+              <span class="icon">💾</span>
+            </button>
+            <button class="btn-icon" id="close-result-btn" title="关闭">
+              <span class="icon">✕</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 对比视图 -->
+        <div class="comparison-view">
+          <div class="comparison-panel">
+            <div class="panel-header">
+              <span class="panel-title">原文</span>
+              <span class="panel-stats" id="original-stats"></span>
+            </div>
+            <div class="panel-content" id="original-content"></div>
+          </div>
+
+          <div class="comparison-divider">
+            <span class="arrow">→</span>
+          </div>
+
+          <div class="comparison-panel">
+            <div class="panel-header">
+              <span class="panel-title">降重后</span>
+              <span class="panel-stats" id="rewritten-stats"></span>
+            </div>
+            <div class="panel-content" id="rewritten-content"></div>
+          </div>
+        </div>
+
+        <!-- 差异高亮 -->
+        <div class="diff-view" id="diff-view" style="display: none;">
+          <div class="diff-header">
+            <span class="icon">🔍</span>
+            差异对比
+          </div>
+          <div class="diff-content" id="diff-content"></div>
+        </div>
+      </section>
+
+      <!-- 加载动画 -->
+      <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">AI正在降重中...</p>
+        <p class="loading-hint">这可能需要几秒钟，请耐心等待～ (￣▽￣)ゞ</p>
+      </div>
+    </main>
+
+    <!-- 历史记录 -->
+    <aside class="history-section" id="history-section">
+      <div class="history-header">
+        <h3>
+          <span class="icon">📜</span>
+          历史记录
+        </h3>
+        <button class="btn-icon" id="clear-history-btn" title="清空历史">
+          <span class="icon">🗑️</span>
+        </button>
+      </div>
+      <div class="history-list" id="history-list">
+        <p class="empty-hint">暂无历史记录</p>
+      </div>
+    </aside>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

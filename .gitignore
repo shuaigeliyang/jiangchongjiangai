@@ -1,0 +1,58 @@
+# 依赖
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 日志
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 上传的文件
+backend/uploads/
+*.tmp
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 构建输出
+dist/
+build/
+.cache/
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 临时文件
+*.tmp
+*.temp
+.temp/
+
+# Playwright
+.playwright-mcp/
+.playwright/
+
+# Spec workflow
+.spec-workflow/
+
+# 图片（如果是项目内的示例图可以保留）
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
